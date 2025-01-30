@@ -121,6 +121,17 @@ backend
 ```
 - now this is a quite good inventory file
 
+
+### pattern matching 
+
+- all = 	All Hosts from your inventory file `ansible all -i inventory.ini -m ping`
+- host1 = 	A single host (host1) `ansible server1 -i inventory.ini -m ping`
+- host1:host2 = 	Both host1 and host2 `ansible server1:server2 -i inventory.ini -m ping`
+- group1 	= A single group `ansible frontend -i inventory.ini -m ping` 
+- group1:group2 = 	All servers in group1 and group2 `ansible frontend:backend -i inventory.ini -m ping`
+- group1:\&group2 =	Only servers that are both in group1 and group2 `ansible frontend:&backend -i inventory.ini -m ping` 
+- group1:\!group2 =	Servers in group1 except those also in group2 ` ansible frontend:!solo -i inventory.ini -m ping`
+
 ---
 ## enable password auth in ec2
 - `sudo passwd ubuntu` create password for ubuntu user
@@ -140,4 +151,10 @@ backend
 
 
 ---
+# DYNAMIC INVENTORY 
+when you have your server on cloud like aws and then they are attached with a auto-scaling group and load balancer,
+our ec2 will be up or down anytime and it will become hectic to manage ec2 ips manually.  
+to overcome this we use dynamic inventories which uses `aws_ec2` plugin to fetch ips automatically.\
 
+- 
+- 
