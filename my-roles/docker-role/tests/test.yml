@@ -1,0 +1,6 @@
+- name: setup the docker installation on ubuntu
+  hosts: ubuntu
+  become: true
+  
+  roles:
+    - docker-role

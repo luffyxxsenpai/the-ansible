@@ -1,0 +1,53 @@
+- name: install the binaries
+  get_url:
+    url: "{{ docker_url }}-{{ docker_version }}.tgz"
+    dest: "{{ docker_dest }}" 
+    mode: '0660'
+
+- name: extract the tar file
+  unarchive:
+    src: "{{ docker_dest }}/docker-{{ docker_version }}.tgz"
+    dest: /opt/
+    remote_src: true
+
+- name: Copy Docker binaries to /usr/bin/
+  shell: "cp -rf /opt/docker/* /usr/bin/"
+
+- name: create a docker group
+  group:
+    name: docker
+    state: present
+
+- name: add users to docker
+  user:
+    name: "{{ docker_user }}"
+    groups: docker
+    append: true
+
+- name: copy the service file
+  copy:
+    src: "{{ item }}"
+    dest: /etc/systemd/system/
+    owner: root
+    group: root
+    mode: '0744'
+  loop:
+    - docker.service
+    - docker.socket
+
+- name: enable the docker service
+  service:
+    name: "{{ item }}" 
+    state: started
+    enabled: true
+  loop:
+    - docker
+    - docker.socket
+
+- name: check docker 
+  command: docker run hello-world
+  register: docker_result
+
+- name: debug
+  debug:
+    var: docker_result
